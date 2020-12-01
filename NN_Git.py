@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  1 00:46:30 2020
-
-@author: Riccardo
-"""
+##############################################################################################################
 
 import numpy as np
 import pandas as pd
@@ -12,33 +7,11 @@ from sklearn.preprocessing import RobustScaler
 from scipy.stats import truncnorm
 
 
-
-
-#%%
-
-Input_Data = pd.read_csv("C:\\Users\\Riccardo\\Documents\\PhD\\ML Research Topics\\Deep Learning Research\\ionosphere.csv")
-
-Y_Train = np.array(Input_Data.iloc[:,-1])
-
-X_Train = np.array(Input_Data.iloc[:,0:Input_Data.shape[1]-1])
-
-
-
-print(X_Train)
-print(Y_Train)
-
-
-X_Train = X_Train[0:170,:]
-Y_Train = Y_Train[0:170]
-
-Scaler = RobustScaler()
-Scaler.fit(X_Train)
-X_Train = Scaler.transform(X_Train)
-
+##############################################################################################################
+#TOY DATASET:
+##############################################################################################################
 
 #%%
-
-#Play inputs:
 
 X_Train = np.array(([10,20,11,12,12],[1,2,1,2,2], [1,3,4,2,5], [10,20,11,12,12]))#rows observations, columns variables
 Y_Train = [1,0,0,1]
@@ -52,6 +25,10 @@ Shape = [2,5,10]
 #rows of input data are observations, columns are attributes
 
 #%%
+
+##############################################################################################################
+#WEIGHT INITIALIZATION:
+##############################################################################################################
 
 
 def Weights_Inizialization(Shape, X_Train):
@@ -86,9 +63,12 @@ Weights_Inizialization(Shape, X_Train)
 
 
 
-###figure out b array issue
 
 #%%
+
+##############################################################################################################
+#MATH FUNCTIONS AND ACTIVATIONS:
+##############################################################################################################
 
 def ReLU(Input):
     
@@ -131,7 +111,9 @@ def Logit_Grad(Input):
 
 #%%
 
-
+##############################################################################################################
+#NEURAL NETWORK:
+##############################################################################################################
 
 
 def Forward_NN(Shape, X_Train, Y_Train, learning_rate):
@@ -311,61 +293,10 @@ def Forward_NN(Shape, X_Train, Y_Train, learning_rate):
 
 #%%
     
+##############################################################################################################
 #RUN MODEL:
+##############################################################################################################
 
 Output = Forward_NN(Shape, X_Train, Y_Train, 0.01)
 
 print("Final output:", Output)
-
-
-
-#%%
-
-#do optimizer that draws from RL, with 5% chance weight update is random, and 95% chance it's gradient descent
-#hyperparameter tuning with the above or just simple gradient descent
-#use neural network to predict hyperparameter values, as in train on hyperparameter raedings as X and loss as Y and understand loss function with NN, then predict minimum loss
-#try new activation function
-#apply gradient descent to weight initialization, can include some metrics for sparsity and whatever and get gradient wrt those
-
-
-#%%
-
-#sanity check
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.optimizers import RMSprop
-
-from tensorflow.keras import backend as K
-import tensorflow as tf
-
-from tensorflow.keras.initializers import TruncatedNormal
-from tensorflow.keras.regularizers import l2
-from tensorflow.keras.regularizers import l1
-
-
-initializer = tf.keras.initializers.GlorotUniform()
-values = np.array(initializer(shape=(1,Shape_Full[j])))[0]
-print(values)
-#%%
-
-model = Sequential()
-
-model.add(Dense(units = Shape[0], activation='relu', bias_initializer='zeros', input_dim = (np.shape(X_Train)[1])))
-
-model.add(Dense(units = Shape[1], activation='relu'))
-
-model.add(Dense(units = Shape[2], activation='relu'))
-
-model.add(Dense(units = 1, activation='sigmoid'))
-
-model.compile(loss='binary_crossentropy', optimizer = Adam(lr = 0.001), metrics=['accuracy'])
-
-model.fit(X_Train, Y_Train, epochs = 800, batch_size = len(X_Train), shuffle = False, verbose = 1)
-
-Validation_Performance = model.evaluate(X_Train, Y_Train, verbose=1, batch_size = len(X_Train))
-
-
-print(Validation_Performance)
